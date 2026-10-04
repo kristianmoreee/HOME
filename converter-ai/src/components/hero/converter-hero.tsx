@@ -55,7 +55,7 @@ export function ConverterHero() {
             <motion.h1
               id="hero-title"
               variants={blurUp}
-              className="font-display text-display-xl font-medium text-sheen"
+              className="font-display text-display-xl font-medium text-sheen lg:max-w-[12ch]"
             >
               {hero.titleLine1}
               <br />

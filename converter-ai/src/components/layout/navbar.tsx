@@ -96,7 +96,7 @@ export function Navbar({ links, cta, hideOnScroll = true }: NavbarProps) {
         >
           <Logo />
 
-          <ul className="hidden items-center gap-1 md:flex">
+          <ul className="hidden items-center gap-1 lg:flex">
             {links.map((link) => {
               const isActive = active === link.href;
               return (
@@ -130,7 +130,7 @@ export function Navbar({ links, cta, hideOnScroll = true }: NavbarProps) {
                 href={cta.href}
                 variant="primary"
                 size="sm"
-                className="hidden md:inline-flex"
+                className="hidden lg:inline-flex"
                 trailingIcon={<ArrowUpRight />}
               >
                 {cta.label}
@@ -138,7 +138,7 @@ export function Navbar({ links, cta, hideOnScroll = true }: NavbarProps) {
             ) : null}
             <button
               type="button"
-              className="inline-flex size-11 items-center justify-center rounded-full text-fg transition-colors hover:bg-white/5 md:hidden"
+              className="inline-flex size-11 items-center justify-center rounded-full text-fg transition-colors hover:bg-white/5 lg:hidden"
               aria-expanded={open}
               aria-controls={menuId}
               aria-label={open ? "Zavrieť menu" : "Otvoriť menu"}
@@ -158,7 +158,7 @@ export function Navbar({ links, cta, hideOnScroll = true }: NavbarProps) {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -8, scale: 0.98 }}
               transition={{ duration: duration.fast, ease: ease.out }}
-              className="glass-strong mt-2 origin-top rounded-card p-3 md:hidden"
+              className="glass-strong mt-2 origin-top rounded-card p-3 lg:hidden"
             >
               <motion.ul
                 initial="hidden"
