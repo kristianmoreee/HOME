@@ -3,6 +3,12 @@
 
 /* ---------- Base ---------- */
 @layer base {
+  html,
+  body {
+    /* clip, not hidden: no scroll container, so position: sticky keeps working */
+    overflow-x: clip;
+  }
+
   html {
     color-scheme: dark;
     background-color: var(--color-background);
@@ -124,4 +130,82 @@
 @utility fade-radial {
   mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 30%, transparent 75%);
   -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 30%, transparent 75%);
+}
+
+/* ---------- Motion helpers ---------- */
+
+@property --beam-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes beam-flow {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes beam-rotate {
+  to {
+    --beam-angle: 360deg;
+  }
+}
+
+@keyframes orbit {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@layer components {
+  /* A short light pulse travelling along an SVG path (pathLength="1"). */
+  .beam-flow {
+    animation: beam-flow 3.2s linear infinite;
+  }
+
+  /* A light that circles the border of its (rounded) element. */
+  .border-beam {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .border-beam::before {
+    content: "";
+    position: absolute;
+    inset: -1.5px;
+    padding: 1.5px;
+    border-radius: inherit;
+    background: conic-gradient(
+      from var(--beam-angle),
+      transparent 0% 68%,
+      var(--color-electric-300) 80%,
+      var(--color-violet-400) 88%,
+      transparent 96%
+    );
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+      linear-gradient(#000 0 0) content-box exclude,
+      linear-gradient(#000 0 0);
+    animation: beam-rotate 5s linear infinite;
+    pointer-events: none;
+  }
+
+  .orbit-slow {
+    animation: orbit 120s linear infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .beam-flow,
+    .border-beam::before,
+    .orbit-slow {
+      animation: none;
+    }
+  }
 }
