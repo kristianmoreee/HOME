@@ -124,7 +124,7 @@ export function Footer({ className }: { className?: string }) {
       {/* Oversized wordmark: a quiet, cinematic sign-off */}
       <div
         aria-hidden="true"
-        className="pointer-events-none select-none overflow-hidden px-gutter text-center font-display text-[18vw] leading-[0.8] font-medium tracking-[-0.06em] text-white/[0.035]"
+        className="pointer-events-none select-none overflow-hidden px-gutter text-center font-display text-[18vw] leading-[0.8] font-medium tracking-[-0.06em] text-[rgb(10_12_26)]"
       >
         Converter
       </div>

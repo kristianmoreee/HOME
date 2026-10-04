@@ -77,7 +77,7 @@ export function GlowBackground({
       ) : null}
 
       {variant === "subtle" ? (
-        <div className="absolute left-1/2 top-0 h-[40vmax] w-[80vmax] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,var(--color-electric-600),transparent)] opacity-[0.08] blur-[120px]" />
+        <div className="absolute left-1/2 top-1/4 h-[40vmax] w-[80vmax] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,var(--color-electric-600),transparent)] opacity-[0.08] blur-[120px]" />
       ) : null}
 
       {grid ? <div className="absolute inset-0 grid-lines fade-radial opacity-60" /> : null}

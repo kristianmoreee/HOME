@@ -36,7 +36,11 @@ function Kpi({ progress, index, label }: { progress: MotionValue<number>; index:
 export function MarketingDashboard({ progress }: { progress: MotionValue<number> }) {
   const draw = useTransform(progress, [0.15, 0.6], [0, 1]);
   const fill = useTransform(progress, [0.45, 0.7], [0, 1]);
-  const fillId = `${useId()}-fill`;
+  const id = useId();
+  const fillId = `${id}-fill`;
+  const clipId = `${id}-clip`;
+  // The area is revealed left to right together with the line.
+  const clipWidth = useTransform(draw, [0, 1], [0, 400]);
 
   return (
     <VisualFrame
@@ -64,11 +68,19 @@ export function MarketingDashboard({ progress }: { progress: MotionValue<number>
                 <stop offset="0" stopColor="var(--color-electric-400)" stopOpacity="0.35" />
                 <stop offset="1" stopColor="var(--color-electric-400)" stopOpacity="0" />
               </linearGradient>
+              <clipPath id={clipId}>
+                <motion.rect x="0" y="0" height="140" width={clipWidth} />
+              </clipPath>
             </defs>
             {[35, 70, 105].map((y) => (
               <line key={y} x1="0" x2="400" y1={y} y2={y} stroke="var(--color-line)" strokeWidth="1" />
             ))}
-            <motion.path d={AREA_FILL} fill={`url(#${fillId})`} style={{ opacity: fill }} />
+            <motion.path
+              d={AREA_FILL}
+              fill={`url(#${fillId})`}
+              clipPath={`url(#${clipId})`}
+              style={{ opacity: fill }}
+            />
             <motion.path
               d={AREA}
               fill="none"
