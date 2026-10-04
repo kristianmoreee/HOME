@@ -12,13 +12,16 @@ Každý komponent sa po stiahnutí prepíše na tokeny Converter (farby, typogra
 
 ## Na stiahnutie (poradie podľa prínosu)
 
-| Deň | Komponent (id) | Autor | Použitie na webe |
-| --- | --- | --- | --- |
-| 1 | Animated Beam (919) | dillionverma / Magic UI | ekosystém, AI automatizácie: lúče medzi uzlami |
-| 1 | Sticky Scroll Reveal (952) | aceternity | sticky príbeh služieb (porovnať s vlastnou implementáciou) |
-| 2 | Timeline (857) | aceternity | proces „Od problému k riešeniu“, lúč sledujúci scroll |
-| 2 | Scroll word reveal (24525) | motion.dev | veľké vyhlásenia v sekcii ekosystém |
-| 3 | Border Beam (1268) | dillionverma / Magic UI | záverečná CTA, hlavné tlačidlo |
-| 3 | Text Reveal (Mask) (19257) | soralabs | nadpisy sekcií |
+Kým limit nedovolí stiahnuť originál, na webe beží vlastná náhrada v rovnakom duchu. Po stiahnutí sa
+originál prispôsobí tokenom a nahradí súbor v stĺpci „Vlastná náhrada“; rozhranie (props) zostáva.
+
+| Deň | Komponent (id) | Autor | Vlastná náhrada dnes | Použitie na webe |
+| --- | --- | --- | --- | --- |
+| 1 | Animated Beam (919) | dillionverma / Magic UI | `sections/converter-ecosystem.tsx` (`.beam-flow`) | ekosystém: lúče zo služieb do Convertera |
+| 1 | Sticky Scroll Reveal (952) | aceternity | `services/service-story.tsx` | sticky príbeh služieb (porovnať, vlastná verzia má živé ukážky) |
+| 2 | Timeline (857) | aceternity | `sections/process-timeline.tsx` | proces „Od problému k riešeniu“, čiara sledujúca scroll |
+| 2 | Scroll word reveal (24525) | motion.dev | `animations/text-reveal.tsx` | veľké vyhlásenia v sekcii ekosystém |
+| 3 | Border Beam (1268) | dillionverma / Magic UI | `.border-beam` v `globals.css` | záverečná CTA, hlavné tlačidlo |
+| 3 | Text Reveal (Mask) (19257) | soralabs | `animations/text-reveal.tsx` | nadpisy sekcií |
 
 Zvážené a zamietnuté: Container Scroll Animation (3D rotácia nesedí k pokojnému štýlu), Scroll Morph Hero (príliš hravé), mega-menu navbary (web má 4 položky).
