@@ -26,18 +26,18 @@ type ConverterHeroVisualProps = {
  * Scroll story (progress):
  *   0.00–0.20  calm, subdued composition
  *   0.20–0.45  data lines illuminate from the C toward the head
- *   0.45–0.70  a light pulse reaches the head, glow rises, slight drift right
- *   0.70–1.00  the head becomes dominant, the composition settles
+ *   0.45–0.70  a light pulse reaches the head, glow rises
+ *   0.70–1.00  the camera eases in on the head, the composition settles
  *
  * With a real asset (sequence, video, image) the pixels of the head and the C
  * are never altered: only position, scale, opacity, edge fade and light
  * layers around the asset move.
  *
- * On small screens and with reduced motion the visual renders a static frame.
+ * Below lg (phones, tablets) and with reduced motion it renders a static frame.
  */
 export function ConverterHeroVisual({ asset, progress, className }: ConverterHeroVisualProps) {
   const reduced = usePrefersReducedMotion();
-  const isMobile = useMediaQuery("(max-width: 767px)");
+  const isMobile = useMediaQuery("(max-width: 1023px)");
   const isStatic = reduced || isMobile;
   const isAsset = asset.type !== "placeholder";
   // The box always has the asset's own proportions, so overlays placed in %
@@ -45,9 +45,12 @@ export function ConverterHeroVisual({ asset, progress, className }: ConverterHer
   const ratio = asset.type === "placeholder" ? 1 : asset.width / asset.height;
   const focus = asset.type === "placeholder" ? undefined : asset.focus;
 
-  // Shared camera move: gentle scale and drift to the right.
-  const scale = useTransform(progress, [0, 1], [1, 1.06]);
-  const x = useTransform(progress, [0.45, 1], ["0%", "6%"]);
+  // Camera: a slow push in, anchored on the focal point (the head), with a
+  // slight drift toward the copy so the head never leaves the viewport.
+  const scale = useTransform(progress, [0, 0.45, 1], [1, 1.02, 1.07]);
+  const x = useTransform(progress, [0.45, 1], ["0%", "-2%"]);
+  const originX = focus?.x ?? 0.5;
+  const originY = focus?.y ?? 0.5;
   const glow = useTransform(progress, [0, 0.45, 0.7, 1], [0.25, 0.4, 1, 0.85]);
 
   return (
@@ -60,7 +63,7 @@ export function ConverterHeroVisual({ asset, progress, className }: ConverterHer
       />
       <motion.div
         className={cn("relative h-full w-full", isAsset && "fade-asset")}
-        style={isStatic ? undefined : { scale, x }}
+        style={isStatic ? undefined : { scale, x, originX, originY }}
       >
         {asset.type === "placeholder" ? (
           <PlaceholderVisual progress={progress} isStatic={isStatic} />

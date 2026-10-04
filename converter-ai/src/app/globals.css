@@ -127,15 +127,21 @@
   -webkit-mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
 }
 
-/* Dissolves a rectangular asset (e.g. the hero frames) into the page on all sides. */
+/*
+ * Dissolves a rectangular asset (the hero frames) into the page: a wide soft
+ * radial falloff around the composition, intersected with linear edge fades
+ * so no edge of the rectangle can ever show.
+ */
 @utility fade-asset {
   mask-image:
-    linear-gradient(to right, transparent, #000 14%, #000 94%, transparent),
-    linear-gradient(to bottom, transparent, #000 7%, #000 86%, transparent);
+    radial-gradient(ellipse 68% 82% at 62% 48%, #000 58%, transparent 100%),
+    linear-gradient(to right, transparent, #000 12%, #000 96%, transparent),
+    linear-gradient(to bottom, transparent, #000 6%, #000 90%, transparent);
   mask-composite: intersect;
   -webkit-mask-image:
-    linear-gradient(to right, transparent, #000 14%, #000 94%, transparent),
-    linear-gradient(to bottom, transparent, #000 7%, #000 86%, transparent);
+    radial-gradient(ellipse 68% 82% at 62% 48%, #000 58%, transparent 100%),
+    linear-gradient(to right, transparent, #000 12%, #000 96%, transparent),
+    linear-gradient(to bottom, transparent, #000 6%, #000 90%, transparent);
   -webkit-mask-composite: source-in;
 }
 
