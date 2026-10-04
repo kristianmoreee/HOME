@@ -1,7 +1,7 @@
 import type { Transition, Variants } from "motion/react";
 
 /**
- * Converter AI animation principles
+ * Converter animation principles
  *
  * 1. Purposeful: motion reveals hierarchy or confirms an action. Never decoration for its own sake.
  * 2. Calm: one confident ease (expo out). Elements arrive quickly and settle slowly.

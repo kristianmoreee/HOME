@@ -12,7 +12,7 @@ type SpotlightCardProps = CardProps & {
 /**
  * Card with a cursor-following light.
  *
- * Adapted from the 21st.dev "Spotlight Card" (preetsuthar17). Changes for Converter AI:
+ * Adapted from the 21st.dev "Spotlight Card" (preetsuthar17). Changes for Converter:
  * position is written to CSS variables instead of React state (no re-render per
  * pointer move), it uses brand tokens and the Card variants, it adds a lit border
  * ring, and it is disabled for touch input where hover has no meaning.

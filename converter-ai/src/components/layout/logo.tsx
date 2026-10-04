@@ -48,7 +48,7 @@ export function Logo({ className, href = "/" }: { className?: string; href?: str
   return (
     <Link
       href={href}
-      aria-label="Converter AI, home"
+      aria-label="Converter, domov"
       className={cn("inline-flex items-center gap-2.5 rounded-md text-fg", className)}
     >
       <LogoMark />
