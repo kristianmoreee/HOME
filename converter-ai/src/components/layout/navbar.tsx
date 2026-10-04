@@ -19,7 +19,38 @@ type NavbarProps = {
   hideOnScroll?: boolean;
 };
 
+/** The in-page section (from `links`) currently in the middle of the viewport. */
+function useActiveSection(links: readonly NavLink[]) {
+  const [active, setActive] = useState<string | null>(null);
+
+  useEffect(() => {
+    const elements = links
+      .filter((link) => link.href.startsWith("#"))
+      .map((link) => document.getElementById(link.href.slice(1)))
+      .filter((element): element is HTMLElement => element !== null);
+    if (elements.length === 0) return;
+
+    const visible = new Set<string>();
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) visible.add(entry.target.id);
+          else visible.delete(entry.target.id);
+        }
+        const current = elements.find((element) => visible.has(element.id));
+        setActive(current ? `#${current.id}` : null);
+      },
+      { rootMargin: "-45% 0px -50% 0px" },
+    );
+    elements.forEach((element) => observer.observe(element));
+    return () => observer.disconnect();
+  }, [links]);
+
+  return active;
+}
+
 export function Navbar({ links, cta, hideOnScroll = true }: NavbarProps) {
+  const active = useActiveSection(links);
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
   const [open, setOpen] = useState(false);
@@ -55,7 +86,7 @@ export function Navbar({ links, cta, hideOnScroll = true }: NavbarProps) {
     >
       <Container>
         <nav
-          aria-label="Main"
+          aria-label="Hlavná navigácia"
           className={cn(
             "flex h-14 items-center justify-between rounded-full border px-3 pl-5 transition-[background-color,border-color,box-shadow,backdrop-filter] duration-500 ease-out-expo md:h-16",
             scrolled || open
@@ -66,16 +97,31 @@ export function Navbar({ links, cta, hideOnScroll = true }: NavbarProps) {
           <Logo />
 
           <ul className="hidden items-center gap-1 md:flex">
-            {links.map((link) => (
-              <li key={link.href + link.label}>
-                <Link
-                  href={link.href}
-                  className="relative rounded-full px-4 py-2 text-body-sm text-fg-muted transition-colors duration-200 hover:text-fg"
-                >
-                  {link.label}
-                </Link>
-              </li>
-            ))}
+            {links.map((link) => {
+              const isActive = active === link.href;
+              return (
+                <li key={link.href + link.label}>
+                  <Link
+                    href={link.href}
+                    aria-current={isActive ? "location" : undefined}
+                    className={cn(
+                      "relative inline-flex rounded-full px-4 py-2 text-body-sm transition-colors duration-200 hover:text-fg",
+                      isActive ? "text-fg" : "text-fg-muted",
+                    )}
+                  >
+                    {isActive ? (
+                      <motion.span
+                        layoutId="navbar-active"
+                        aria-hidden="true"
+                        className="absolute inset-0 rounded-full border border-line bg-white/[0.06]"
+                        transition={{ duration: duration.fast * 1.6, ease: ease.out }}
+                      />
+                    ) : null}
+                    <span className="relative">{link.label}</span>
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
 
           <div className="flex items-center gap-2">
@@ -95,7 +141,7 @@ export function Navbar({ links, cta, hideOnScroll = true }: NavbarProps) {
               className="inline-flex size-11 items-center justify-center rounded-full text-fg transition-colors hover:bg-white/5 md:hidden"
               aria-expanded={open}
               aria-controls={menuId}
-              aria-label={open ? "Close menu" : "Open menu"}
+              aria-label={open ? "Zavrieť menu" : "Otvoriť menu"}
               onClick={() => setOpen((value) => !value)}
             >
               {open ? <X className="size-5" /> : <Menu className="size-5" />}
