@@ -25,18 +25,38 @@ const instrumentSerif = Instrument_Serif({
   display: "swap",
 });
 
+const title = `${siteConfig.name} | Weby, AI, automatizácie a marketing pre firmy`;
+
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
-    default: `${siteConfig.name} | ${siteConfig.tagline}`,
+    default: title,
     template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.description,
+  applicationName: siteConfig.name,
+  keywords: [
+    "tvorba webových stránok",
+    "AI chatbot",
+    "automatizácia procesov",
+    "e-mail automatizácie",
+    "Google Ads",
+    "Meta Ads",
+    "digitálny marketing",
+    "Prešov",
+  ],
+  alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     locale: siteConfig.locale,
+    url: siteConfig.url,
     siteName: siteConfig.name,
-    title: siteConfig.name,
+    title,
+    description: siteConfig.description,
+  },
+  twitter: {
+    card: "summary",
+    title,
     description: siteConfig.description,
   },
 };
