@@ -23,7 +23,7 @@ class Extract(HTMLParser):
             self.skip += 1
         if tag == "a" and a.get("href"):
             self.links.append(a["href"])
-            self.out.append(f" [link:{a['href']}] ")
+            pass
         if tag in ("h1", "h2", "h3", "h4", "h5", "h6"):
             self.out.append(f"\n\n{'#' * int(tag[1])} ")
         if tag in ("p", "li", "div", "section", "br", "button", "footer", "header", "nav"):
@@ -45,13 +45,15 @@ class Extract(HTMLParser):
 
 
 host = urllib.parse.urlparse(START).netloc
-queue, seen = [START], set()
+queue, seen, printed = [START], set(), set()
 while queue and len(seen) < LIMIT:
-    url = queue.pop(0).split("#")[0]
+    url = queue.pop(0).split("#")[0].rstrip("/") or START
     if url in seen:
         continue
     seen.add(url)
     try:
+        parts = urllib.parse.urlsplit(url)
+        url = urllib.parse.urlunsplit(parts._replace(path=urllib.parse.quote(urllib.parse.unquote(parts.path))))
         req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (site audit)"})
         with urllib.request.urlopen(req, timeout=20) as r:
             if "text/html" not in r.headers.get("Content-Type", ""):
@@ -63,8 +65,13 @@ while queue and len(seen) < LIMIT:
     p = Extract()
     p.feed(html)
     title = re.search(r"<title>(.*?)</title>", html, re.S)
-    text = re.sub(r"\n\s*\n+", "\n\n", "".join(p.out))
-    print(f"\n\n===== PAGE {url} | title: {title.group(1).strip() if title else ''}\n{text.strip()}")
+    lines = []
+    for line in "".join(p.out).splitlines():
+        line = line.strip()
+        if line and line not in printed:
+            printed.add(line)
+            lines.append(line)
+    print(f"\n\n===== PAGE {url} | title: {title.group(1).strip() if title else ''}\n" + "\n".join(lines))
     for href in p.links:
         nxt = urllib.parse.urljoin(url, href).split("#")[0]
         u = urllib.parse.urlparse(nxt)
