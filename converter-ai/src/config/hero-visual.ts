@@ -8,6 +8,9 @@
  *   3. "image":    one optimised still with parallax and lighting layers
  * Until an asset exists, "placeholder" renders a neutral, brand-coloured C.
  */
+/** Focal point of the asset in 0..1 (x from the left, y from the top). */
+type Focus = { x: number; y: number };
+
 export type HeroVisualAsset =
   | {
       type: "sequence";
@@ -21,9 +24,34 @@ export type HeroVisualAsset =
       /** Static image used on mobile and for reduced motion. */
       poster: string;
       alt: string;
+      /** Optional light layer that brightens over this point during the pulse stage. */
+      focus?: Focus;
     }
-  | { type: "video"; src: string; poster: string; width: number; height: number; alt: string }
-  | { type: "image"; src: string; width: number; height: number; alt: string }
+  | {
+      type: "video";
+      src: string;
+      poster: string;
+      width: number;
+      height: number;
+      alt: string;
+      focus?: Focus;
+    }
+  | { type: "image"; src: string; width: number; height: number; alt: string; focus?: Focus }
   | { type: "placeholder" };
 
-export const heroVisual: HeroVisualAsset = { type: "placeholder" };
+/**
+ * Official Converter hero visual: the C connected to the AI head. The 121
+ * frames are taken 1:1 from the brand animation (cropped to the composition,
+ * no retouching). The poster is its final frame.
+ */
+export const heroVisual: HeroVisualAsset = {
+  type: "sequence",
+  pattern: "/hero/frames/frame-{index}.webp",
+  frameCount: 121,
+  pad: 4,
+  width: 1440,
+  height: 960,
+  poster: "/hero/poster.webp",
+  alt: "Symbol C značky Converter prepojený dátovými líniami s hlavou umelej inteligencie",
+  focus: { x: 0.672, y: 0.415 },
+};

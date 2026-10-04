@@ -5,10 +5,10 @@ import { useCallback, useEffect, useId, useRef } from "react";
 import {
   motion,
   useMotionValueEvent,
-  useReducedMotion,
   useTransform,
   type MotionValue,
 } from "motion/react";
+import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 import type { HeroVisualAsset } from "@/config/hero-visual";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { cn } from "@/lib/utils";
@@ -29,12 +29,21 @@ type ConverterHeroVisualProps = {
  *   0.45–0.70  a light pulse reaches the head, glow rises, slight drift right
  *   0.70–1.00  the head becomes dominant, the composition settles
  *
+ * With a real asset (sequence, video, image) the pixels of the head and the C
+ * are never altered: only position, scale, opacity, edge fade and light
+ * layers around the asset move.
+ *
  * On small screens and with reduced motion the visual renders a static frame.
  */
 export function ConverterHeroVisual({ asset, progress, className }: ConverterHeroVisualProps) {
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
   const isMobile = useMediaQuery("(max-width: 767px)");
-  const isStatic = Boolean(reduced) || isMobile;
+  const isStatic = reduced || isMobile;
+  const isAsset = asset.type !== "placeholder";
+  // The box always has the asset's own proportions, so overlays placed in %
+  // (the focus glow) land exactly on the same spot of the image.
+  const ratio = asset.type === "placeholder" ? 1 : asset.width / asset.height;
+  const focus = asset.type === "placeholder" ? undefined : asset.focus;
 
   // Shared camera move: gentle scale and drift to the right.
   const scale = useTransform(progress, [0, 1], [1, 1.06]);
@@ -42,14 +51,17 @@ export function ConverterHeroVisual({ asset, progress, className }: ConverterHer
   const glow = useTransform(progress, [0, 0.45, 0.7, 1], [0.25, 0.4, 1, 0.85]);
 
   return (
-    <div className={cn("relative h-full w-full", className)}>
+    <div className={cn("relative w-full", className)} style={{ aspectRatio: ratio }}>
       {/* Ambient light behind the asset, rises with the pulse */}
       <motion.div
         aria-hidden="true"
         className="absolute top-1/2 left-1/2 aspect-square w-[85%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,rgb(77_127_255/0.35),rgb(117_82_245/0.18)_55%,transparent)] blur-3xl"
         style={isStatic ? { opacity: 0.6 } : { opacity: glow }}
       />
-      <motion.div className="relative h-full w-full" style={isStatic ? undefined : { scale, x }}>
+      <motion.div
+        className={cn("relative h-full w-full", isAsset && "fade-asset")}
+        style={isStatic ? undefined : { scale, x }}
+      >
         {asset.type === "placeholder" ? (
           <PlaceholderVisual progress={progress} isStatic={isStatic} />
         ) : null}
@@ -60,7 +72,7 @@ export function ConverterHeroVisual({ asset, progress, className }: ConverterHer
             width={asset.width}
             height={asset.height}
             priority
-            sizes="(min-width: 768px) 55vw, 100vw"
+            sizes="(min-width: 768px) 60vw, 100vw"
             className="h-full w-full object-contain"
           />
         ) : null}
@@ -78,6 +90,7 @@ export function ConverterHeroVisual({ asset, progress, className }: ConverterHer
             <FrameSequence asset={asset} progress={progress} />
           )
         ) : null}
+        {focus && !isStatic ? <FocusGlow focus={focus} progress={progress} /> : null}
       </motion.div>
     </div>
   );
@@ -91,8 +104,24 @@ function Poster({ src, alt, width, height }: { src: string; alt: string; width: 
       width={width}
       height={height}
       priority
-      sizes="(min-width: 768px) 55vw, 100vw"
+      sizes="(min-width: 768px) 60vw, 100vw"
       className="h-full w-full object-contain"
+    />
+  );
+}
+
+/**
+ * A soft light layer over the asset's focal point (e.g. the core in the head).
+ * It brightens with the pulse stage; it adds light, it never repaints the asset.
+ */
+function FocusGlow({ focus, progress }: { focus: { x: number; y: number }; progress: MotionValue<number> }) {
+  const opacity = useTransform(progress, [0.4, 0.7, 1], [0, 0.55, 0.35]);
+  const scale = useTransform(progress, [0.4, 0.7], [0.6, 1]);
+  return (
+    <motion.div
+      aria-hidden="true"
+      className="pointer-events-none absolute aspect-square w-[28%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,rgb(157_188_255/0.45),rgb(117_82_245/0.2)_50%,transparent)] mix-blend-screen blur-2xl"
+      style={{ left: `${focus.x * 100}%`, top: `${focus.y * 100}%`, opacity, scale }}
     />
   );
 }
@@ -184,22 +213,40 @@ function FrameSequence({ asset, progress }: { asset: SequenceAsset; progress: Mo
     };
   }, [asset, draw]);
 
-  useMotionValueEvent(progress, "change", (value) => {
+  // Hold the first frame briefly and the last frame at the end of the hero.
+  const playhead = useTransform(progress, [0.06, 0.88], [0, 1], { clamp: true });
+
+  useMotionValueEvent(playhead, "change", (value) => {
     const index = Math.min(asset.frameCount - 1, Math.max(0, Math.round(value * (asset.frameCount - 1))));
     if (index === currentRef.current) return;
     currentRef.current = index;
     requestAnimationFrame(() => draw(index));
   });
 
+  const firstFrame = asset.pattern.replace("{index}", "1".padStart(asset.pad, "0"));
+
   return (
-    <canvas
-      ref={canvasRef}
-      width={asset.width}
-      height={asset.height}
-      role="img"
-      aria-label={asset.alt}
-      className="h-full w-full object-contain"
-    />
+    <div className="relative h-full w-full">
+      {/* Server-rendered first frame: paints immediately, the canvas takes over on top */}
+      <Image
+        src={firstFrame}
+        alt=""
+        aria-hidden="true"
+        width={asset.width}
+        height={asset.height}
+        priority
+        sizes="(min-width: 768px) 60vw, 100vw"
+        className="absolute inset-0 h-full w-full object-contain"
+      />
+      <canvas
+        ref={canvasRef}
+        width={asset.width}
+        height={asset.height}
+        role="img"
+        aria-label={asset.alt}
+        className="relative h-full w-full object-contain"
+      />
+    </div>
   );
 }
 

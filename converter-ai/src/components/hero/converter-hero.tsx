@@ -1,7 +1,8 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
+import { motion, useScroll, useTransform } from "motion/react";
+import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 import { ArrowDown, ArrowRight } from "lucide-react";
 import { ButtonLink } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
@@ -19,7 +20,7 @@ import { cn } from "@/lib/utils";
  */
 export function ConverterHero() {
   const ref = useRef<HTMLElement>(null);
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
 
   const copyY = useTransform(scrollYProgress, [0.7, 1], [0, -32]);
@@ -79,10 +80,15 @@ export function ConverterHero() {
 
         {/*
           One visual instance (so assets load once). Mobile: a calm static frame
-          below the copy. Desktop: absolutely placed on the right, behind nothing.
+          below the copy, edge to edge. Desktop: absolutely placed on the right,
+          vertically centred, never taller than the viewport.
         */}
-        <div className="pointer-events-none relative mx-auto mb-16 aspect-square w-[min(100%-2.5rem,24rem)] md:absolute md:inset-y-0 md:right-[-8%] md:mb-0 md:flex md:aspect-auto md:w-[62%] md:max-w-none md:items-center lg:right-[-4%] lg:w-[58%]">
-          <ConverterHeroVisual asset={heroVisual} progress={scrollYProgress} className="md:h-[86%]" />
+        <div className="pointer-events-none relative mb-14 md:absolute md:inset-y-0 md:right-[-7%] md:mb-0 md:flex md:w-[66%] md:items-center lg:right-[-5%] lg:w-[62%]">
+          <ConverterHeroVisual
+            asset={heroVisual}
+            progress={scrollYProgress}
+            className="mx-auto md:max-w-[min(100%,135svh)]"
+          />
         </div>
 
         <motion.a
