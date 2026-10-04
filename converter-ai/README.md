@@ -1,7 +1,8 @@
-# Converter AI — web
+# Converter: web
 
-Základ oficiálneho webu **Converter AI**: dizajnový systém, architektúra a znovupoužiteľné komponenty.
-Toto ešte nie je hotový web. Stránka `/` je náhľad všetkých komponentov s ukážkovým obsahom.
+Oficiálny web **Converter**: domovská stránka, dizajnový systém a znovupoužiteľné komponenty.
+Obsah vychádza z converter.sk (pozri `docs/content-map.md`). Interný prehľad dizajnového systému je na
+`/design-system` (neindexuje sa).
 
 **Stack:** Next.js (App Router) · TypeScript · Tailwind CSS v4 · Motion · Lucide · class-variance-authority
 
@@ -15,17 +16,24 @@ npm run check      # lint + typecheck + build
 
 ```
 src/
-  app/                 layout (fonty, metadata), globals.css, náhľadová stránka
+  app/                 layout (fonty, metadata), domovská stránka, /design-system, robots, sitemap
   styles/tokens.css    všetky dizajnové tokeny (@theme)
   lib/                 cn(), motion presety a princípy animácií
-  config/site.ts       značka, navigácia, footer
+  config/site.ts       značka, kontakt, navigácia, sociálne siete, právne odkazy
+  config/hero-visual.ts  ktorý asset má hero (sekvencia, video, obrázok, placeholder)
+  content/home.ts      všetky texty domovskej stránky
+  hooks/               useMediaQuery
   components/
     ui/                primitívy: Button, Card, SpotlightCard, Badge, Typography, Container, Grid, Section
     motion/            AnimatedSection, Marquee, ScrollProgress, MotionProvider
+    animations/        ProgressReveal, TextReveal
     effects/           GlowBackground
     layout/            Navbar, Footer, Logo
-    sections/          Hero, ServiceCard, BentoGrid, CTA
-    design-system/     špecimeny pre náhľad (po spustení webu odstrániť)
+    hero/              ConverterHero, ConverterHeroVisual
+    services/          ServiceStory + 6 ukážok služieb (visuals/)
+    sections/          ToolsStrip, ConverterEcosystem, BeforeAfter, Outcomes, ProcessTimeline, FinalCta,
+                       ServiceCard, BentoGrid
+    design-system/     špecimeny pre /design-system
 ```
 
 ## Tokeny
@@ -66,14 +74,19 @@ bez breakpointov:
 | `Button`, `ButtonLink` | `primary` (biela), `accent`, `secondary` (glass), `outline`, `ghost`, `link`; `sm` / `md` / `lg` / `icon` |
 | `Card` | `surface`, `glass`, `elevated`, `outline`, `featured`; `interactive` |
 | `SpotlightCard` | svetlo sledujúce kurzor, podľa 21st.dev Spotlight Card, bez re-renderov |
-| `Navbar` | sklo po scrollnutí, schová sa pri scrolle nadol, mobilné menu (Esc, zámok scrollu) |
-| `Hero` | eyebrow, nadpis, popis, 2 akcie, slot na vizuál, vstupná animácia |
+| `Navbar` | sklo po scrollnutí, aktívna sekcia, schová sa pri scrolle nadol, mobilné menu (Esc, zámok scrollu) |
+| `ConverterHero` | sticky hero, scroll riadi vizuál v 4 fázach (0–20, 20–45, 45–70, 70–100 %) |
+| `ConverterHeroVisual` | slot na asset C + AI hlava: sekvencia snímok, WebM, obrázok alebo placeholder |
+| `ServiceStory` | sticky príbeh 6 služieb na desktope, na mobile pod sebou, každá so živou ukážkou |
 | `ServiceCard` | ikona, index, tagy, celá karta ako odkaz |
 | `AnimatedSection` / `AnimatedItem` | reveal pri scrolle, stagger |
 | `Marquee` | čisté CSS, pauza na hover/focus, podľa 21st.dev Logo Marquee |
 | `BentoGrid` / `BentoCard` | 6-stĺpcová mriežka, `colSpan` 2/3/4/6, `rowSpan` 1/2 |
-| `CTA` | veľký panel so svetlom |
-| `Footer` | stĺpce odkazov, tagline, veľký wordmark |
+| `ConverterEcosystem` | vyhlásenie slovo po slove, lúče zo všetkých služieb do Convertera |
+| `BeforeAfter` | Bez / S Converterom, scroll postupne rozsvieti zmenu |
+| `ProcessTimeline` | 6 krokov, čiara sa plní pri scrolle, horizontálne na desktope, vertikálne na mobile |
+| `FinalCta` | záverečná výzva, reálny kontakt, svetelný lúč okolo tlačidla |
+| `Footer` | navigácia, služby, kontakt, sociálne siete, právne odkazy, veľký wordmark |
 | `ScrollProgress` | tenký pruh navrchu, pružina |
 | `GlowBackground` | `hero` / `section` / `subtle`, mriežka, zrno |
 
@@ -92,7 +105,14 @@ Definované v `src/lib/motion.ts`:
 Časy: `instant` 150 ms (hover), `fast` 250 ms (menu), `base` 600 ms (bloky), `slow` 900 ms (hero),
 `cinematic` 1.4 s.
 
+## Hero vizuál
+
+Kým nie je dodaný finálny vizuál C + AI hlava, hero ukazuje abstraktný placeholder (symbol C, dátové
+línie, svetelné jadro). Postup na doplnenie assetu je v `public/hero/README.md`; stačí zmeniť
+`src/config/hero-visual.ts`.
+
 ## 21st.dev
 
 Komponenty z 21st.dev slúžia ako referencia, nie na kopírovanie. `Marquee` a `SpotlightCard` sú prepísané
-na brand tokeny a výkonnejšiu implementáciu (pôvod je uvedený v komentári v kóde).
+na brand tokeny a výkonnejšiu implementáciu (pôvod je uvedený v komentári v kóde). Ďalšie komponenty,
+ktoré nahradia vlastné verzie po obnovení denného limitu, sú v `docs/21st-shortlist.md`.
