@@ -7,7 +7,7 @@ const nextConfig: NextConfig = {
   images: {
     formats: ["image/avif", "image/webp"],
   },
-  ...(process.env.STATIC_EXPORT ? { output: "export", images: { unoptimized: true } } : {}),
+  ...(process.env.STATIC_EXPORT ? { output: "export" as const, images: { unoptimized: true } } : {}),
 };
 
 export default nextConfig;
