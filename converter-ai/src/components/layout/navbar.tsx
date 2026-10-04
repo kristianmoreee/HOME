@@ -49,7 +49,7 @@ function useActiveSection(links: readonly NavLink[]) {
   return active;
 }
 
-export function Navbar({ links, cta, hideOnScroll = true }: NavbarProps) {
+export function Navbar({ links, cta, hideOnScroll = false }: NavbarProps) {
   const active = useActiveSection(links);
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
@@ -78,134 +78,144 @@ export function Navbar({ links, cta, hideOnScroll = true }: NavbarProps) {
     };
   }, [open]);
 
+  const solid = scrolled || open;
+
   return (
     <motion.header
-      className="fixed inset-x-0 top-0 z-50 pt-3 md:pt-4"
-      animate={{ y: hidden && !open ? "-110%" : "0%" }}
+      className="fixed inset-x-0 top-0 z-50"
+      animate={{ y: hidden && !open ? "-100%" : "0%" }}
       transition={{ duration: duration.fast * 1.6, ease: ease.out }}
     >
-      <Container>
-        <nav
-          aria-label="Hlavná navigácia"
-          className={cn(
-            "flex h-14 items-center justify-between rounded-full border px-3 pl-5 transition-[background-color,border-color,box-shadow,backdrop-filter] duration-500 ease-out-expo md:h-16",
-            scrolled || open
-              ? "glass-strong border-line-strong"
-              : "border-transparent bg-transparent",
-          )}
-        >
-          <Logo />
+      {/* Transparent over the hero, dark glass with a hairline once the page scrolls */}
+      <div
+        className={cn(
+          "border-b transition-[background-color,border-color,backdrop-filter] duration-500 ease-out-expo",
+          solid
+            ? "border-white/[0.08] bg-[rgb(0_2_15/0.8)] backdrop-blur-xl backdrop-saturate-150"
+            : "border-transparent bg-transparent",
+        )}
+      >
+        <Container>
+          <nav aria-label="Hlavná navigácia" className="flex h-16 items-center justify-between gap-6 md:h-20">
+            <Logo priority />
 
-          <ul className="hidden items-center gap-1 lg:flex">
-            {links.map((link) => {
-              const isActive = active === link.href;
-              return (
-                <li key={link.href + link.label}>
-                  <Link
-                    href={link.href}
-                    aria-current={isActive ? "location" : undefined}
-                    className={cn(
-                      "relative inline-flex rounded-full px-4 py-2 text-body-sm transition-colors duration-200 hover:text-fg",
-                      isActive ? "text-fg" : "text-fg-muted",
-                    )}
-                  >
-                    {isActive ? (
-                      <motion.span
-                        layoutId="navbar-active"
-                        aria-hidden="true"
-                        className="absolute inset-0 rounded-full border border-line bg-white/[0.06]"
-                        transition={{ duration: duration.fast * 1.6, ease: ease.out }}
-                      />
-                    ) : null}
-                    <span className="relative">{link.label}</span>
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
+            <ul className="hidden items-center gap-1 lg:flex">
+              {links.map((link) => {
+                const isActive = active === link.href;
+                return (
+                  <li key={link.href + link.label}>
+                    <Link
+                      href={link.href}
+                      aria-current={isActive ? "location" : undefined}
+                      className={cn(
+                        "relative inline-flex px-4 py-2 text-body-sm transition-colors duration-200 hover:text-white",
+                        isActive ? "text-white" : "text-white/70",
+                      )}
+                    >
+                      {link.label}
+                      {isActive ? (
+                        <motion.span
+                          layoutId="navbar-active"
+                          aria-hidden="true"
+                          className="absolute inset-x-4 -bottom-0.5 h-px bg-[linear-gradient(90deg,var(--color-electric-400),var(--color-violet-400))] shadow-[0_0_10px_var(--color-electric-400)]"
+                          transition={{ duration: duration.fast * 1.6, ease: ease.out }}
+                        />
+                      ) : null}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
 
-          <div className="flex items-center gap-2">
-            {cta ? (
-              <ButtonLink
-                href={cta.href}
-                variant="primary"
-                size="sm"
-                className="hidden lg:inline-flex"
-                trailingIcon={<ArrowUpRight />}
+            <div className="flex items-center gap-2">
+              {cta ? (
+                <ButtonLink
+                  href={cta.href}
+                  variant="primary"
+                  size="sm"
+                  className="hidden lg:inline-flex"
+                  trailingIcon={<ArrowUpRight />}
+                >
+                  {cta.label}
+                </ButtonLink>
+              ) : null}
+              <button
+                type="button"
+                className="inline-flex size-11 items-center justify-center rounded-full text-white transition-colors hover:bg-white/[0.06] lg:hidden"
+                aria-expanded={open}
+                aria-controls={menuId}
+                aria-label={open ? "Zavrieť menu" : "Otvoriť menu"}
+                onClick={() => setOpen((value) => !value)}
               >
-                {cta.label}
-              </ButtonLink>
-            ) : null}
-            <button
-              type="button"
-              className="inline-flex size-11 items-center justify-center rounded-full text-fg transition-colors hover:bg-white/5 lg:hidden"
-              aria-expanded={open}
-              aria-controls={menuId}
-              aria-label={open ? "Zavrieť menu" : "Otvoriť menu"}
-              onClick={() => setOpen((value) => !value)}
-            >
-              {open ? <X className="size-5" /> : <Menu className="size-5" />}
-            </button>
-          </div>
-        </nav>
+                {open ? <X className="size-5" /> : <Menu className="size-5" />}
+              </button>
+            </div>
+          </nav>
+        </Container>
 
         <AnimatePresence>
           {open ? (
             <motion.div
               id={menuId}
               key="mobile-menu"
-              initial={{ opacity: 0, y: -8, scale: 0.98 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -8, scale: 0.98 }}
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
               transition={{ duration: duration.fast, ease: ease.out }}
-              className="glass-strong mt-2 origin-top rounded-card p-3 lg:hidden"
+              className="overflow-hidden border-t border-white/[0.08] lg:hidden"
             >
-              <motion.ul
-                initial="hidden"
-                animate="visible"
-                variants={{
-                  visible: { transition: { staggerChildren: 0.05, delayChildren: 0.05 } },
-                }}
-                className="flex flex-col"
-              >
-                {links.map((link) => (
-                  <motion.li
-                    key={link.href + link.label}
-                    variants={{
-                      hidden: { opacity: 0, y: 8 },
-                      visible: {
-                        opacity: 1,
-                        y: 0,
-                        transition: { duration: duration.fast, ease: ease.out },
-                      },
-                    }}
-                  >
-                    <Link
-                      href={link.href}
-                      onClick={() => setOpen(false)}
-                      className="flex min-h-12 items-center rounded-xl px-4 text-h4 text-fg transition-colors hover:bg-white/5"
-                    >
-                      {link.label}
-                    </Link>
-                  </motion.li>
-                ))}
-              </motion.ul>
-              {cta ? (
-                <ButtonLink
-                  href={cta.href}
-                  variant="primary"
-                  size="lg"
-                  className="mt-3 w-full"
-                  onClick={() => setOpen(false)}
-                  trailingIcon={<ArrowUpRight />}
+              <Container className="py-4">
+                <motion.ul
+                  initial="hidden"
+                  animate="visible"
+                  variants={{
+                    visible: { transition: { staggerChildren: 0.05, delayChildren: 0.05 } },
+                  }}
+                  className="flex flex-col"
                 >
-                  {cta.label}
-                </ButtonLink>
-              ) : null}
+                  {links.map((link) => (
+                    <motion.li
+                      key={link.href + link.label}
+                      variants={{
+                        hidden: { opacity: 0, y: 8 },
+                        visible: {
+                          opacity: 1,
+                          y: 0,
+                          transition: { duration: duration.fast, ease: ease.out },
+                        },
+                      }}
+                    >
+                      <Link
+                        href={link.href}
+                        onClick={() => setOpen(false)}
+                        aria-current={active === link.href ? "location" : undefined}
+                        className={cn(
+                          "flex min-h-12 items-center rounded-xl px-2 text-h4 transition-colors hover:text-white",
+                          active === link.href ? "text-white" : "text-white/75",
+                        )}
+                      >
+                        {link.label}
+                      </Link>
+                    </motion.li>
+                  ))}
+                </motion.ul>
+                {cta ? (
+                  <ButtonLink
+                    href={cta.href}
+                    variant="primary"
+                    size="lg"
+                    className="mt-4 w-full"
+                    onClick={() => setOpen(false)}
+                    trailingIcon={<ArrowUpRight />}
+                  >
+                    {cta.label}
+                  </ButtonLink>
+                ) : null}
+              </Container>
             </motion.div>
           ) : null}
         </AnimatePresence>
-      </Container>
+      </div>
     </motion.header>
   );
 }

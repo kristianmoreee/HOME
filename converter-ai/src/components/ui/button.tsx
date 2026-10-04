@@ -7,7 +7,7 @@ export const buttonVariants = cva(
   [
     "group/button relative inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap",
     "rounded-full font-medium tracking-[-0.01em] select-none",
-    "transition-[background-color,border-color,color,box-shadow,transform] duration-200 ease-out-quart",
+    "transition-[background-color,border-color,color,box-shadow,transform,filter] duration-200 ease-out-quart",
     "active:scale-[0.98] disabled:pointer-events-none disabled:opacity-40",
     "focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-ring",
     "[&_svg]:size-4 [&_svg]:shrink-0",
@@ -15,8 +15,9 @@ export const buttonVariants = cva(
   {
     variants: {
       variant: {
-        /** Highest emphasis. White on ink: the most premium contrast available. */
-        primary: "bg-white text-ink-950 shadow-[inset_0_-1px_0_rgb(0_0_0/0.12)] hover:bg-white/90",
+        /** Highest emphasis: the Converter blue to violet, white label (≥ 4.5:1 across the gradient). */
+        primary:
+          "bg-[linear-gradient(100deg,var(--color-electric-500),var(--color-violet-500))] text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.18),0_10px_30px_-12px_rgb(42_92_240/0.7)] hover:brightness-110 hover:shadow-[inset_0_1px_0_rgb(255_255_255/0.22),0_12px_36px_-10px_rgb(117_82_245/0.75)]",
         /** Brand accent. Use once per view for the key conversion action. */
         accent:
           "bg-accent text-accent-fg shadow-[inset_0_1px_0_rgb(255_255_255/0.18)] hover:bg-accent-hover hover:shadow-glow-electric",

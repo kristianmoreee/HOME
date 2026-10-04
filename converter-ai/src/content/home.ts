@@ -5,7 +5,7 @@
  */
 
 export const hero = {
-  eyebrow: "AI • Automatizácie • Digitálny rast",
+  eyebrow: "Weby • Automatizácie • AI • Marketing",
   titleLine1: "Meníme možnosti",
   titleLine2: "na",
   titleAccent: "výsledky.",

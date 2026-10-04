@@ -1,17 +1,36 @@
 @import "tailwindcss";
 @import "../styles/tokens.css";
 
+/* ---------- Brand foundation (unlayered on purpose) ----------
+ * The page background, text colour and font must win over any host reset
+ * that is not in a cascade layer (embeds, preview hosts, browser
+ * extensions). Tailwind's own base styles live in @layer base, and any
+ * unlayered rule beats every layered one, so these few declarations stay
+ * outside the layers. */
+:root {
+  color-scheme: dark;
+  background-color: var(--color-background);
+}
+
+html,
+body {
+  /* clip, not hidden: no scroll container, so position: sticky keeps working */
+  overflow-x: clip;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  background-color: var(--color-background);
+  color: var(--color-fg);
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  line-height: var(--text-body--line-height);
+}
+
 /* ---------- Base ---------- */
 @layer base {
-  html,
-  body {
-    /* clip, not hidden: no scroll container, so position: sticky keeps working */
-    overflow-x: clip;
-  }
-
   html {
-    color-scheme: dark;
-    background-color: var(--color-background);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
@@ -19,12 +38,6 @@
   }
 
   body {
-    min-height: 100dvh;
-    background-color: var(--color-background);
-    color: var(--color-fg);
-    font-family: var(--font-sans);
-    font-size: var(--text-body);
-    line-height: var(--text-body--line-height);
     font-feature-settings: "ss01", "cv11";
   }
 
@@ -173,6 +186,18 @@
   }
 }
 
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: calc(var(--particle-opacity, 0.4) * 0.35);
+    transform: translateY(0);
+  }
+  50% {
+    opacity: var(--particle-opacity, 0.4);
+    transform: translateY(-6px);
+  }
+}
+
 @keyframes orbit {
   to {
     transform: rotate(360deg);
@@ -219,10 +244,16 @@
     animation: orbit 120s linear infinite;
   }
 
+  .particle {
+    opacity: var(--particle-opacity, 0.4);
+    animation: twinkle 7s ease-in-out infinite;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .beam-flow,
     .border-beam::before,
-    .orbit-slow {
+    .orbit-slow,
+    .particle {
       animation: none;
     }
   }

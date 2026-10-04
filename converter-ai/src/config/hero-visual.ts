@@ -24,8 +24,10 @@ export type HeroVisualAsset =
       /** Static image used on mobile and for reduced motion. */
       poster: string;
       alt: string;
-      /** Optional light layer that brightens over this point during the pulse stage. */
+      /** Light layer that brightens over this point during the pulse stage (e.g. the core). */
       focus?: Focus;
+      /** Wider light layer that brightens the subject (e.g. the head) in the final stage. */
+      bloom?: Focus;
     }
   | {
       type: "video";
@@ -35,8 +37,17 @@ export type HeroVisualAsset =
       height: number;
       alt: string;
       focus?: Focus;
+      bloom?: Focus;
     }
-  | { type: "image"; src: string; width: number; height: number; alt: string; focus?: Focus }
+  | {
+      type: "image";
+      src: string;
+      width: number;
+      height: number;
+      alt: string;
+      focus?: Focus;
+      bloom?: Focus;
+    }
   | { type: "placeholder" };
 
 /**
@@ -54,4 +65,5 @@ export const heroVisual: HeroVisualAsset = {
   poster: "/hero/poster.webp",
   alt: "Symbol C značky Converter prepojený dátovými líniami s hlavou umelej inteligencie",
   focus: { x: 0.672, y: 0.415 },
+  bloom: { x: 0.84, y: 0.4 },
 };
