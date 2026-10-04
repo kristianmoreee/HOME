@@ -5,10 +5,12 @@ on:
     paths:
       - "converter-ai/**"
       - ".github/workflows/converter-ai.yml"
+      - ".github/scripts/**"
   pull_request:
     paths:
       - "converter-ai/**"
       - ".github/workflows/converter-ai.yml"
+      - ".github/scripts/**"
 
 permissions:
   contents: read
