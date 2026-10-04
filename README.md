@@ -4,4 +4,4 @@ Osobný repozitár používateľa [kristianmoreee](https://github.com/kristianmo
 
 ## Obsah
 
-Zatiaľ tu je len tento README. Ďalšie súbory pribudnú postupne.
+- [`converter-ai/`](converter-ai/) — web Converter (Next.js, dizajnový systém, komponenty a domovská stránka)
