@@ -63,3 +63,13 @@ jobs:
           git add -f preview-out
           git commit -m "Static preview export (temporary)"
           git push origin HEAD:${{ github.ref_name }}
+
+  # One-off content audit: a commit whose message contains [audit] prints the
+  # readable text of the current converter.sk site to the job log.
+  audit:
+    if: github.event_name == 'push' && contains(github.event.head_commit.message, '[audit]')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read converter.sk
+        run: python3 .github/scripts/scrape_site.py https://www.converter.sk/
