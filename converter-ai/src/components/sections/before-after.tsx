@@ -1,7 +1,8 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useReducedMotion, useScroll, useTransform, type MotionValue } from "motion/react";
+import { motion, useScroll, useTransform, type MotionValue } from "motion/react";
+import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 import { Check, Minus } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { SectionHeader } from "@/components/ui/section";
@@ -41,7 +42,7 @@ function BeforeItem({ progress, index, text }: { progress: MotionValue<number>; 
  */
 export function BeforeAfter() {
   const ref = useRef<HTMLDivElement>(null);
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start 0.8", "end 0.55"] });
   const glow = useTransform(scrollYProgress, [0.3, 0.9], [0, 1]);
   const progress = reduced ? undefined : scrollYProgress;

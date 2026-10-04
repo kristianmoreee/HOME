@@ -6,11 +6,11 @@ import {
   motion,
   useMotionValue,
   useMotionValueEvent,
-  useReducedMotion,
   useScroll,
   useTransform,
   type MotionValue,
 } from "motion/react";
+import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 import { ArrowRight, Check } from "lucide-react";
 import { ButtonLink } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
@@ -51,7 +51,7 @@ const COUNT = services.length;
  */
 export function ServiceStory() {
   const isDesktop = useMediaQuery("(min-width: 1024px)");
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
 
   return (
     <section id="sluzby" aria-labelledby="services-title" className="relative scroll-mt-0">

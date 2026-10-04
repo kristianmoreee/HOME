@@ -1,7 +1,8 @@
 "use client";
 
 import { useId } from "react";
-import { motion, useReducedMotion } from "motion/react";
+import { motion } from "motion/react";
+import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 import { Container } from "@/components/ui/container";
 import { Text } from "@/components/ui/typography";
 import { TextReveal } from "@/components/animations/text-reveal";
@@ -33,7 +34,7 @@ function curve(from: { x: number; y: number }) {
  * be swapped for the adapted original once downloaded (docs/21st-shortlist.md).
  */
 export function ConverterEcosystem() {
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
   const gradientId = `${useId()}-beam`;
 
   return (

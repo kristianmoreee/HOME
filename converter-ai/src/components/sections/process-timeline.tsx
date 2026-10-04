@@ -4,11 +4,11 @@ import { useRef } from "react";
 import {
   motion,
   useMotionValue,
-  useReducedMotion,
   useScroll,
   useTransform,
   type MotionValue,
 } from "motion/react";
+import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 import {
   FlaskConical,
   PenTool,
@@ -34,7 +34,7 @@ const COUNT = workProcess.steps.length;
  */
 export function ProcessTimeline() {
   const ref = useRef<HTMLOListElement>(null);
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start 0.8", "end 0.6"] });
   const complete = useMotionValue(1);
   const progress = reduced ? complete : scrollYProgress;
