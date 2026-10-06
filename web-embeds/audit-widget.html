@@ -1,0 +1,152 @@
+<!-- Converter AI – Bezplatný audit webu (vložiť do Framer: Insert → Embed → HTML) -->
+<div id="cvx-audit">
+<style>
+#cvx-audit{--bg:#0B0716;--card:#140E24;--line:#2A2140;--text:#F4F1FB;--muted:#A59CBE;--acc:#8B5CF6;--acc2:#B98CFF;--good:#22C55E;--mid:#F59E0B;--bad:#EF4444;
+  font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--text);max-width:880px;margin:0 auto;box-sizing:border-box}
+#cvx-audit *{box-sizing:border-box}
+#cvx-audit .card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:32px}
+#cvx-audit h2{margin:0 0 6px;font-size:28px;line-height:1.2}
+#cvx-audit .sub{color:var(--muted);margin:0 0 24px;font-size:15px;line-height:1.6}
+#cvx-audit form{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+#cvx-audit .full{grid-column:1/-1}
+#cvx-audit label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
+#cvx-audit input[type=text],#cvx-audit input[type=email]{width:100%;padding:14px 16px;border-radius:12px;border:1px solid var(--line);background:#0E0919;color:var(--text);font-size:15px;outline:none;transition:border .2s}
+#cvx-audit input:focus{border-color:var(--acc)}
+#cvx-audit .chk{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--muted);line-height:1.5}
+#cvx-audit .chk a{color:var(--acc2)}
+#cvx-audit button{background:linear-gradient(90deg,#7C3AED,#A78BFA);color:#fff;border:0;border-radius:12px;padding:16px 22px;font-size:16px;font-weight:700;cursor:pointer;transition:transform .15s,opacity .2s}
+#cvx-audit button:hover{transform:translateY(-1px)}
+#cvx-audit button:disabled{opacity:.6;cursor:default;transform:none}
+#cvx-audit .err{color:#FCA5A5;font-size:14px;margin-top:10px;display:none}
+#cvx-audit .load{display:none;text-align:center;padding:48px 16px}
+#cvx-audit .spin{width:64px;height:64px;border-radius:50%;border:5px solid var(--line);border-top-color:var(--acc);margin:0 auto 20px;animation:cvxs 1s linear infinite}
+@keyframes cvxs{to{transform:rotate(360deg)}}
+#cvx-audit .steps{list-style:none;padding:0;margin:20px auto 0;max-width:360px;text-align:left}
+#cvx-audit .steps li{padding:8px 0;color:var(--muted);font-size:15px;transition:color .3s}
+#cvx-audit .steps li.on{color:var(--text)}
+#cvx-audit .steps li.done{color:var(--good)}
+#cvx-audit .res{display:none;animation:cvxf .5s ease}
+@keyframes cvxf{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+#cvx-audit .top{display:flex;gap:28px;align-items:center;flex-wrap:wrap}
+#cvx-audit .ring{position:relative;width:150px;height:150px;flex:none}
+#cvx-audit .ring svg{transform:rotate(-90deg)}
+#cvx-audit .ring .num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+#cvx-audit .ring b{font-size:42px;line-height:1}
+#cvx-audit .ring span{font-size:12px;color:var(--muted);margin-top:4px}
+#cvx-audit .url{color:var(--acc2);font-size:14px;word-break:break-all}
+#cvx-audit .head{font-size:22px;font-weight:700;margin:6px 0 0;line-height:1.35}
+#cvx-audit .metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:28px 0 8px}
+#cvx-audit .m{background:#0E0919;border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center}
+#cvx-audit .m b{display:block;font-size:26px}
+#cvx-audit .m span{font-size:12px;color:var(--muted)}
+#cvx-audit .bar{height:5px;background:var(--line);border-radius:5px;margin-top:10px;overflow:hidden}
+#cvx-audit .bar i{display:block;height:100%;width:0;border-radius:5px;transition:width 1.2s ease}
+#cvx-audit .vitals{display:flex;gap:10px;flex-wrap:wrap;margin:6px 0 0}
+#cvx-audit .pill{background:#0E0919;border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:13px;color:var(--muted)}
+#cvx-audit .pill b{color:var(--text)}
+#cvx-audit h3{font-size:17px;margin:28px 0 12px}
+#cvx-audit ul.list{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+#cvx-audit ul.list li{background:#0E0919;border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:15px;line-height:1.5}
+#cvx-audit ul.list li small{display:block;color:var(--muted);font-size:13px;margin-top:2px}
+#cvx-audit .ok li::before{content:"✓ ";color:var(--good);font-weight:700}
+#cvx-audit .fix li::before{content:"→ ";color:var(--mid);font-weight:700}
+#cvx-audit .recs{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+#cvx-audit .rec{border:1px solid var(--acc);background:linear-gradient(180deg,rgba(139,92,246,.14),rgba(139,92,246,.03));border-radius:14px;padding:16px}
+#cvx-audit .rec b{display:block;font-size:16px}
+#cvx-audit .rec .p{color:var(--acc2);font-weight:700;margin:4px 0 6px}
+#cvx-audit .rec small{color:var(--muted);font-size:13px;line-height:1.5}
+#cvx-audit .cta{margin-top:28px;display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+#cvx-audit .cta a{display:inline-block;background:linear-gradient(90deg,#7C3AED,#A78BFA);color:#fff;text-decoration:none;font-weight:700;padding:15px 22px;border-radius:12px}
+#cvx-audit .cta span{color:var(--muted);font-size:14px}
+#cvx-audit .again{background:transparent;border:1px solid var(--line);color:var(--muted);font-weight:500;padding:12px 16px;font-size:14px}
+@media(max-width:640px){#cvx-audit .card{padding:22px}#cvx-audit form{grid-template-columns:1fr}#cvx-audit .metrics{grid-template-columns:repeat(2,1fr)}#cvx-audit .top{justify-content:center;text-align:center}}
+</style>
+
+<div class="card">
+  <div class="intro">
+    <h2>Bezplatný audit vášho webu</h2>
+    <p class="sub">Zadajte adresu webu. Za približne minútu vám ukážeme skóre, rýchlosť, SEO a konkrétne odporúčania. Kompletný audit pošleme aj na e-mail.</p>
+    <form novalidate>
+      <div class="full"><label>Adresa webu *</label><input type="text" name="url" placeholder="www.vasafirma.sk" required></div>
+      <div><label>Meno</label><input type="text" name="name" placeholder="Ján Novák"></div>
+      <div><label>Firma</label><input type="text" name="company" placeholder="Firma s.r.o."></div>
+      <div class="full"><label>E-mail *</label><input type="email" name="email" placeholder="jan@firma.sk" required></div>
+      <label class="chk full"><input type="checkbox" name="consent"> <span>Súhlasím so spracovaním údajov a zaslaním auditu. <a href="https://www.converter.sk/gdpr" target="_blank" rel="noopener">Ochrana osobných údajov</a></span></label>
+      <div class="full"><button type="submit">Spustiť audit zdarma →</button><div class="err"></div></div>
+    </form>
+  </div>
+
+  <div class="load">
+    <div class="spin"></div>
+    <b style="font-size:18px">Analyzujeme váš web…</b>
+    <div class="sub" style="margin:6px 0 0">Zvyčajne to trvá 30 až 90 sekúnd. Nezatvárajte stránku.</div>
+    <ul class="steps">
+      <li>Načítavame stránku</li>
+      <li>Meriame rýchlosť na mobile (Google PageSpeed)</li>
+      <li>Kontrolujeme SEO a obsah</li>
+      <li>AI pripravuje odporúčania</li>
+    </ul>
+  </div>
+
+  <div class="res"></div>
+</div>
+
+<script>
+(function(){
+  var HOOK="https://hook.eu1.make.com/epqpv6o3olr1okn7p6xlyedrla54un3a";
+  var root=document.getElementById("cvx-audit");
+  var form=root.querySelector("form"),intro=root.querySelector(".intro"),load=root.querySelector(".load"),res=root.querySelector(".res"),err=root.querySelector(".err"),btn=form.querySelector("button");
+  var steps=[].slice.call(root.querySelectorAll(".steps li")),timer;
+  function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]})}
+  function col(v){return v>=90?"var(--good)":v>=50?"var(--mid)":"var(--bad)"}
+  function num(v){var n=parseFloat(v);return isNaN(n)?null:Math.round(n)}
+  function showErr(t){err.textContent=t;err.style.display="block"}
+  function startSteps(){var i=0;steps.forEach(function(s){s.className=""});steps[0].className="on";
+    timer=setInterval(function(){if(i<steps.length-1){steps[i].className="done";i++;steps[i].className="on"}},14000)}
+  function metric(label,v){var n=num(v);
+    return '<div class="m"><b style="color:'+(n==null?"var(--muted)":col(n))+'">'+(n==null?"–":n)+'</b><span>'+label+'</span><div class="bar"><i data-w="'+(n||0)+'" style="background:'+(n==null?"var(--line)":col(n))+'"></i></div></div>'}
+  function render(d){
+    var s=num(d.score)||0,C=2*Math.PI*64;
+    var h='<div class="top"><div class="ring"><svg width="150" height="150"><circle cx="75" cy="75" r="64" stroke="#2A2140" stroke-width="12" fill="none"/><circle class="arc" cx="75" cy="75" r="64" stroke="'+col(s)+'" stroke-width="12" fill="none" stroke-linecap="round" stroke-dasharray="'+C+'" stroke-dashoffset="'+C+'" style="transition:stroke-dashoffset 1.4s ease"/></svg><div class="num"><b class="sc">0</b><span>zo 100</span></div></div>'+
+      '<div style="flex:1;min-width:220px"><div class="url">'+esc(d.url)+'</div><div class="head">'+esc(d.headline||"Audit je hotový")+'</div></div></div>';
+    var hasPs=[d.performance,d.seo,d.accessibility,d.best_practices].some(function(x){return num(x)!=null});
+    if(hasPs){h+='<div class="metrics">'+metric("Rýchlosť (mobil)",d.performance)+metric("SEO",d.seo)+metric("Prístupnosť",d.accessibility)+metric("Osvedčené postupy",d.best_practices)+'</div>';
+      var v=[];if(d.lcp)v.push('Načítanie obsahu (LCP): <b>'+esc(d.lcp)+'</b>');if(d.fcp)v.push('Prvé vykreslenie: <b>'+esc(d.fcp)+'</b>');if(d.cls)v.push('Posun rozloženia: <b>'+esc(d.cls)+'</b>');
+      if(v.length)h+='<div class="vitals">'+v.map(function(x){return'<span class="pill">'+x+'</span>'}).join("")+'</div>'}
+    if(d.strengths&&d.strengths.length)h+='<h3>Čo funguje dobre</h3><ul class="list ok">'+d.strengths.map(function(x){return"<li>"+esc(x)+"</li>"}).join("")+"</ul>";
+    if(d.improvements&&d.improvements.length)h+='<h3>Čo by sme zlepšili</h3><ul class="list fix">'+d.improvements.map(function(x){return"<li><b>"+esc(x.title)+"</b><small>"+esc(x.why)+"</small></li>"}).join("")+"</ul>";
+    if(d.recommendations&&d.recommendations.length)h+='<h3>Čo odporúčame</h3><div class="recs">'+d.recommendations.map(function(x){return'<div class="rec"><b>'+esc(x.service)+'</b><div class="p">'+esc(x.price)+'</div><small>'+esc(x.why)+'</small></div>'}).join("")+"</div>";
+    h+='<div class="cta"><a href="https://www.converter.sk/formular">Dohodnúť bezplatnú konzultáciu</a><span>'+(String(d.email_sent)==="true"?"📧 Kompletný audit sme poslali aj na váš e-mail.":"")+'</span></div>'+
+      '<div style="margin-top:14px"><button type="button" class="again">↺ Skontrolovať iný web</button></div>'+
+      '<p class="sub" style="margin:18px 0 0;font-size:12px">Audit je pripravený automaticky pomocou AI a merania Google PageSpeed. Ceny sú orientačné podľa nášho cenníka.</p>';
+    res.innerHTML=h;
+    load.style.display="none";res.style.display="block";
+    requestAnimationFrame(function(){setTimeout(function(){
+      res.querySelector(".arc").style.strokeDashoffset=C*(1-s/100);
+      res.querySelectorAll(".bar i").forEach(function(b){b.style.width=b.getAttribute("data-w")+"%"});
+      var el=res.querySelector(".sc"),t0=null;(function a(t){t0=t0||t;var p=Math.min((t-t0)/1300,1);el.textContent=Math.round(s*p);if(p<1)requestAnimationFrame(a)})(performance.now());
+    },60)});
+    res.querySelector(".again").onclick=function(){res.style.display="none";intro.style.display="block";btn.disabled=false;form.url.value="";form.url.focus()};
+    root.scrollIntoView({behavior:"smooth",block:"start"});
+  }
+  form.addEventListener("submit",function(e){
+    e.preventDefault();err.style.display="none";
+    var url=form.url.value.trim(),email=form.email.value.trim();
+    if(!url)return showErr("Zadajte adresu webu.");
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email))return showErr("Zadajte platný e-mail.");
+    if(!form.consent.checked)return showErr("Pre zaslanie auditu potrebujeme váš súhlas.");
+    btn.disabled=true;intro.style.display="none";load.style.display="block";startSteps();
+    var ctrl=window.AbortController?new AbortController():null;var to=setTimeout(function(){ctrl&&ctrl.abort()},175000);
+    fetch(HOOK,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({url:url,email:email,name:form.name.value.trim(),company:form.company.value.trim(),consent:"true"}),signal:ctrl?ctrl.signal:undefined})
+      .then(function(r){return r.text()}).then(function(t){
+        clearTimeout(to);clearInterval(timer);var d;try{d=JSON.parse(t)}catch(x){d=null}
+        if(d&&d.ok){render(d);return}
+        throw new Error(d&&d.error==="invalid"?"invalid":"fail");
+      }).catch(function(x){
+        clearTimeout(to);clearInterval(timer);load.style.display="none";intro.style.display="block";btn.disabled=false;
+        showErr(x.message==="invalid"?"Skontrolujte prosím zadané údaje.":"Audit sa teraz nepodarilo dokončiť. Ak ste zadali e-mail, výsledok vám príde aj tam, prípadne to skúste o chvíľu znova.");
+      });
+  });
+})();
+</script>
+</div>
